@@ -7,7 +7,7 @@
 
   <rect x="0" y="0" width="1000" height="780" rx="14" fill="#ffffff"/>
 
-  <text x="50" y="56" font-size="28" font-weight="bold" fill="#0d1117">Valencia Air — Node 1 wiring</text>
+  <text x="50" y="56" font-size="28" font-weight="bold" fill="#0d1117">Valencia Air — Node 2 wiring</text>
   <text x="50" y="84" font-size="15" fill="#57606a">ESP32 with BME280, SGP30 and OLED display (I2C), and PMS5003 (UART)</text>
 
   <!-- Power -->
@@ -57,5 +57,5 @@
   <text x="548" y="688" font-size="14" fill="#085041">GND   →   GND</text>
   <text x="548" y="718" font-size="11.5" fill="#0f6e56">Data line runs at 3.3 V: connects directly, no level shifter needed.</text>
 
-  <text x="50" y="766" font-size="12" fill="#8b949e">Same wiring for all three nodes, including the OLED display.</text>
+  <text x="50" y="766" font-size="12" fill="#8b949e">Node 2 (periphery) — indoor location, no weatherproof enclosure needed. Wiring identical to node 1.</text>
 </svg>

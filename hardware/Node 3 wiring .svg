@@ -1,14 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="780" viewBox="0 0 1000 780" font-family="Helvetica, Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="980" viewBox="0 0 1000 980" font-family="Helvetica, Arial, sans-serif">
   <defs>
     <marker id="punta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M2 1 L8 5 L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
     </marker>
   </defs>
 
-  <rect x="0" y="0" width="1000" height="780" rx="14" fill="#ffffff"/>
+  <rect x="0" y="0" width="1000" height="980" rx="14" fill="#ffffff"/>
 
-  <text x="50" y="56" font-size="28" font-weight="bold" fill="#0d1117">Valencia Air — Node 1 wiring</text>
-  <text x="50" y="84" font-size="15" fill="#57606a">ESP32 with BME280, SGP30 and OLED display (I2C), and PMS5003 (UART)</text>
+  <text x="50" y="56" font-size="28" font-weight="bold" fill="#0d1117">Valencia Air — Node 3 wiring</text>
+  <text x="50" y="84" font-size="15" fill="#57606a">Coastal node — same wiring as nodes 1 and 2, inside a weatherproof enclosure</text>
 
   <!-- Power -->
   <rect x="360" y="120" width="280" height="46" rx="9" fill="#faeeda" stroke="#854f0b" stroke-width="1.6"/>
@@ -57,5 +57,13 @@
   <text x="548" y="688" font-size="14" fill="#085041">GND   →   GND</text>
   <text x="548" y="718" font-size="11.5" fill="#0f6e56">Data line runs at 3.3 V: connects directly, no level shifter needed.</text>
 
-  <text x="50" y="766" font-size="12" fill="#8b949e">Same wiring for all three nodes, including the OLED display.</text>
+  <!-- Enclosure section -->
+  <rect x="60" y="772" width="880" height="158" rx="14" fill="#fcf0eb" stroke="#993c1d" stroke-width="1.8"/>
+  <text x="88" y="808" font-size="19" font-weight="bold" fill="#4a1b0c">Weatherproof enclosure (coastal node only)</text>
+  <text x="88" y="836" font-size="13" fill="#993c1d">CPROSP IP65 box, 150 x 110 x 70 mm — protects against rain and sea salt</text>
+  <text x="88" y="872" font-size="14" fill="#712b13">• Cable gland (included with box)  →  sealed power cable entry</text>
+  <text x="88" y="898" font-size="14" fill="#712b13">• 2x PVC elbows facing down  →  airflow for the PMS5003 without letting water in</text>
+  <text x="88" y="922" font-size="11.5" fill="#993c1d">Seal seams and cable entry with neutral silicone (SIKA SikaSeal 174).</text>
+
+  <text x="50" y="962" font-size="12" fill="#8b949e">Node 3 (coastal park) — same electronics as nodes 1 and 2, mounted inside the IP65 enclosure.</text>
 </svg>
