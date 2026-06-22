@@ -74,3 +74,5 @@ The PMS5003 data line outputs 3.3V even when powered at 5V, so it connects direc
 ## About
 
 A personal project by a 16-year-old maker in Valencia. built for Hack Club Macondo. The aim is a system that actually runs 24/7 in three real locations and can scale into a wider citizen sensor network.
+
+ds

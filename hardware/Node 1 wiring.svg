@@ -1,1 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="600" viewBox="0 0 820 600" font-family="Helvetica, Arial, sans-serif">
+  <rect x="0" y="0" width="820" height="600" rx="12" fill="#ffffff"/>
+  <text x="40" y="46" font-size="22" font-weight="bold" fill="#0d1117">Valencia Air — Node 1 wiring</text>
+  <text x="40" y="70" font-size="13" fill="#57606a">ESP32 + BME280 + SGP30 + SH1106 OLED (I2C) and PMS5003 (UART)</text>
 
+  <!-- ESP32 center -->
+  <rect x="320" y="120" width="180" height="170" rx="12" fill="#f1eff8" stroke="#534ab7" stroke-width="1.5"/>
+  <text x="410" y="150" font-size="16" font-weight="bold" fill="#26215c" text-anchor="middle">ESP32 DevKit</text>
+  <text x="410" y="170" font-size="12" fill="#534ab7" text-anchor="middle">ELEGOO (USB-C)</text>
+  <text x="340" y="200" font-size="12" fill="#26215c">3V3</text>
+  <text x="340" y="222" font-size="12" fill="#26215c">5V (VIN)</text>
+  <text x="340" y="244" font-size="12" fill="#26215c">GND</text>
+  <text x="480" y="200" font-size="12" fill="#26215c" text-anchor="end">GPIO21 (SDA)</text>
+  <text x="480" y="222" font-size="12" fill="#26215c" text-anchor="end">GPIO22 (SCL)</text>
+  <text x="480" y="244" font-size="12" fill="#26215c" text-anchor="end">GPIO16 (RX2)</text>
+  <text x="480" y="266" font-size="12" fill="#26215c" text-anchor="end">GPIO17 (TX2)</text>
+
+  <!-- I2C group -->
+  <rect x="40" y="350" width="340" height="200" rx="12" fill="#e6f1fb" stroke="#185fa5" stroke-width="1.5"/>
+  <text x="60" y="380" font-size="16" font-weight="bold" fill="#042c53">Bus I2C (3.3V)</text>
+  <text x="60" y="402" font-size="12" fill="#185fa5">BME280 · SGP30 · OLED SH1106 (en paralelo)</text>
+  <text x="60" y="436" font-size="13" fill="#0c447c">SDA  →  GPIO21</text>
+  <text x="60" y="460" font-size="13" fill="#0c447c">SCL  →  GPIO22</text>
+  <text x="60" y="484" font-size="13" fill="#0c447c">VCC  →  3V3</text>
+  <text x="60" y="508" font-size="13" fill="#0c447c">GND  →  GND</text>
+  <text x="60" y="535" font-size="11" fill="#185fa5">Los 3 comparten los mismos pines; cada uno tiene su direccion I2C.</text>
+
+  <!-- UART group -->
+  <rect x="440" y="350" width="340" height="200" rx="12" fill="#e1f5ee" stroke="#0f6e56" stroke-width="1.5"/>
+  <text x="460" y="380" font-size="16" font-weight="bold" fill="#04342c">Bus UART (5V)</text>
+  <text x="460" y="402" font-size="12" fill="#0f6e56">PMS5003 (sensor de particulas)</text>
+  <text x="460" y="436" font-size="13" fill="#085041">TX (sensor)  →  GPIO16 (RX2)</text>
+  <text x="460" y="460" font-size="13" fill="#085041">RX (sensor)  →  GPIO17 (TX2)</text>
+  <text x="460" y="484" font-size="13" fill="#085041">VCC  →  5V (VIN)</text>
+  <text x="460" y="508" font-size="13" fill="#085041">GND  →  GND</text>
+  <text x="460" y="535" font-size="11" fill="#0f6e56">Linea de datos a 3.3V: compatible directo, sin conversor de nivel.</text>
+
+  <!-- Power -->
+  <rect x="320" y="120" width="0" height="0"/>
+  <rect x="305" y="40" width="210" height="34" rx="8" fill="#faeeda" stroke="#854f0b" stroke-width="1.5"/>
+  <text x="410" y="62" font-size="12" fill="#633806" text-anchor="middle">Cargador 5V / 2A USB-C  →  ESP32</text>
+
+  <!-- connectors -->
+  <line x1="410" y1="74" x2="410" y2="118" stroke="#854f0b" stroke-width="2"/>
+  <path d="M330 250 L210 250 L210 348" fill="none" stroke="#185fa5" stroke-width="2"/>
+  <path d="M490 258 L610 258 L610 348" fill="none" stroke="#0f6e56" stroke-width="2"/>
+
+  <text x="40" y="585" font-size="11" fill="#8b949e">Mismo cableado para los 3 nodos. Nodo 1 incluye OLED; nodos 2 y 3 sin pantalla.</text>
+</svg>
