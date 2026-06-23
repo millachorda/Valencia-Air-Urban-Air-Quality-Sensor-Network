@@ -1,7 +1,10 @@
 import sqlite3
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 import os
 DB_PATH = os.path.join(os.path.dirname(__file__), "readings.db")

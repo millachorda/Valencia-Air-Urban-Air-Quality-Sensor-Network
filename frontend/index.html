@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Valencia Air</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        .etiqueta {
+            color: white;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            text-shadow: 1px 1px 3px black;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        const limitesValencia = L.latLngBounds([39.30, -0.45], [39.55, -0.25]);
+
+        const map = L.map("map", {
+            zoomControl: true,
+            scrollWheelZoom: true,
+            maxBounds: limitesValencia,
+            maxBoundsViscosity: 1.0,
+            minZoom: 11,
+            maxZoom: 17
+        }).setView([39.45, -0.35], 12);
+
+        L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+            attribution: "© Esri"
+        }).addTo(map);
+
+        const nodos = {
+            1: { lat: 39.4543, lng: -0.3615, nombre: "Quatre Carreres" },
+            2: { lat: 39.4665, lng: -0.3431, nombre: "Ayora" },
+            3: { lat: 39.3827, lng: -0.3323, nombre: "El Saler" }
+        };
+
+        function colorPorPM25(pm25) {
+            if (pm25 <= 15) return "#2ecc40";
+            if (pm25 <= 35) return "#ffdc00";
+            return "#ff4136";
+        }
+
+        fetch("http://127.0.0.1:5000/latest")
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                datos.forEach(fila => {
+                    const id = fila[2];
+                    const pm25 = fila[3];
+                    const temp = fila[4];
+                    const info = nodos[id];
+
+                    L.circleMarker([info.lat, info.lng], {
+                        radius: 14,
+                        color: "#fff",
+                        weight: 3,
+                        fillColor: colorPorPM25(pm25),
+                        fillOpacity: 0.9
+                    }).addTo(map).bindPopup(
+                        "<b>" + info.nombre + "</b><br>PM2.5: " + pm25 + " µg/m³<br>Temp: " + temp + " ºC"
+                    );
+
+                    L.marker([info.lat, info.lng], {
+                        icon: L.divIcon({
+                            className: "etiqueta",
+                            html: info.nombre,
+                            iconSize: [100, 20],
+                            iconAnchor: [-12, 10]
+                        })
+                    }).addTo(map);
+                });
+            })
+            .catch(error => console.log("Error al cargar datos:", error));
+    </script>
+</body>
+
+</html>
