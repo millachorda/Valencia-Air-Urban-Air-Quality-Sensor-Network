@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS readings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp TEXT,
     node INTEGER,
-    pm25 REAL
+    pm25 REAL,
     temp REAL
 )
 """)
