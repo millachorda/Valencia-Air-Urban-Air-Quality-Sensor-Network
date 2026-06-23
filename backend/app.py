@@ -6,8 +6,6 @@ app = Flask(__name__)
 import os
 DB_PATH = os.path.join(os.path.dirname(__file__), "readings.db")
 
-
-
 @app.route("/")
 def home():
     return "The server works"
@@ -34,6 +32,21 @@ def get_readings():
     conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM readings")
+    filas = cursor.fetchall()
+    conexion.close()
+    return jsonify(filas)
+
+@app.route("/latest")
+def get_latest():
+    conexion = sqlite3.connect(DB_PATH)
+    cursor = conexion.cursor()
+    cursor.execute("""
+        SELECT * FROM readings
+        WHERE id IN (
+            SELECT MAX(id) FROM readings GROUP BY node
+            )
+            ORDER BY node
+        """)
     filas = cursor.fetchall()
     conexion.close()
     return jsonify(filas)
