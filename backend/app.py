@@ -10,7 +10,6 @@ def home():
 def recieve_data():
     data = request.get_json()
     print("Data recieved:", data)
-    return jsonify({"status": "ok"})
 
     conexion = sqlite3.connect("readings.db")
     cursor = conexion.cursor()
@@ -22,6 +21,16 @@ def recieve_data():
     conexion.close()
 
     return jsonify({"status": "ok"})
+
+
+@app.route("/readings")
+def get_readings():
+    conexion = sqlite3.connect("readings.db")
+    cursor = conexion.cursor()
+    cursor.execute("SELECT * FROM readings")
+    filas = cursor.fetchall()
+    conexion.close()
+    return jsonify(filas)
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
