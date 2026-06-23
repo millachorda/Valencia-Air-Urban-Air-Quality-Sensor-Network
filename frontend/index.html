@@ -6,6 +6,7 @@
     <title>Valencia Air</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         #map {
             height: 100vh;
@@ -23,11 +24,48 @@
             text-shadow: 1px 1px 3px black;
             white-space: nowrap;
         }
+
+        #panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            overflow-y: auto;
+        }
+
+        #panel h2 {
+            margin-top: 0;
+        }
+
+        #cerrar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            border: none;
+            background: none;
+        }
     </style>
 </head>
 
 <body>
     <div id="map"></div>
+
+    <div id="panel">
+        <button id="cerrar" onclick="cerrarPanel()">x</button>
+        <h2 id="panel-titulo"></h2>
+        <canvas id="grafica"></canvas>
+    </div>
+
     <script>
         const limitesValencia = L.latLngBounds([39.30, -0.45], [39.55, -0.25]);
 
@@ -41,7 +79,7 @@
         }).setView([39.45, -0.35], 12);
 
         L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-            attribution: "© Esri"
+            attribution: '© Esri'
         }).addTo(map);
 
         const nodos = {
@@ -53,7 +91,52 @@
         function colorPorPM25(pm25) {
             if (pm25 <= 15) return "#2ecc40";
             if (pm25 <= 35) return "#ffdc00";
-            return "#ff4136";
+            return "#ff4136"
+        }
+
+        let graficaActual = null;
+
+        function verHistorial(id) {
+            const info = nodos[id];
+            document.getElementById("panel-titulo").innerText = "Historial - " + info.nombre;
+            document.getElementById("panel").style.display = "block";
+
+            fetch("http://127.0.0.1:5000/readings/" + id)
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    const fechas = datos.map(fila => fila[1]);
+                    const valoresPM25 = datos.map(fila => fila[3]);
+
+                    if (graficaActual) {
+                        graficaActual.destroy();
+                    }
+
+                    const ctx = document.getElementById("grafica");
+                    graficaActual = new Chart(ctx, {
+                        type: "line",
+                        data: {
+                            labels: fechas,
+                            datasets: [{
+                                label: "PM2.5 (µg/m³)",
+                                data: valoresPM25,
+                                borderColor: "#3388ff",
+                                backGroundColor: "rgba(51,136,255,0.2)",
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true }
+                            }
+                        }
+                    });
+                });
+        }
+
+        function cerrarPanel() {
+            document.getElementById("panel").style.display = "none";
         }
 
         fetch("http://127.0.0.1:5000/latest")
@@ -63,6 +146,7 @@
                     const id = fila[2];
                     const pm25 = fila[3];
                     const temp = fila[4];
+                    const fecha = fila[1];
                     const info = nodos[id];
 
                     L.circleMarker([info.lat, info.lng], {
@@ -72,7 +156,11 @@
                         fillColor: colorPorPM25(pm25),
                         fillOpacity: 0.9
                     }).addTo(map).bindPopup(
-                        "<b>" + info.nombre + "</b><br>PM2.5: " + pm25 + " µg/m³<br>Temp: " + temp + " ºC"
+                        "<b>" + info.nombre + "</b><br>" +
+                        "PM2.5: " + pm25 + "µg/m³<br>" +
+                        "Temp: " + temp + " ºC<br>" +
+                        "Ultima lectura: " + fecha + "<br><br>" +
+                        "<button onclick='verHistorial(" + id + ")'>Ver historial</button>"
                     );
 
                     L.marker([info.lat, info.lng], {
@@ -83,10 +171,8 @@
                             iconAnchor: [-12, 10]
                         })
                     }).addTo(map);
-                });
+                })
             })
             .catch(error => console.log("Error al cargar datos:", error));
     </script>
 </body>
-
-</html>

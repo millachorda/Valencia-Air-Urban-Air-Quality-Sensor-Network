@@ -54,5 +54,14 @@ def get_latest():
     conexion.close()
     return jsonify(filas)
 
+@app.route("/readings/<int:node>")
+def get_readings_by_node(node):
+    conexion = sqlite3.connect(DB_PATH)
+    cursor = conexion.cursor()
+    cursor.execute("SELECT * FROM readings WHERE node = ? ORDER BY id", (node,))
+    filas = cursor.fetchall()
+    conexion.close()
+    return jsonify(filas)
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
