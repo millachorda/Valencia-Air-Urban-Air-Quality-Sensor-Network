@@ -11,7 +11,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "readings.db")
 
 @app.route("/")
 def home():
-    return "send_from_directory("../frontend", "index.html")
+    return send_from_directory("../frontend", "index.html")
 
 @app.route("/data", methods=["POST"])
 def recieve_data():
