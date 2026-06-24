@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -11,7 +11,7 @@ DB_PATH = os.path.join(os.path.dirname(__file__), "readings.db")
 
 @app.route("/")
 def home():
-    return "The server works"
+    return "send_from_directory("../frontend", "index.html")
 
 @app.route("/data", methods=["POST"])
 def recieve_data():
