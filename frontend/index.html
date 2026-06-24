@@ -101,7 +101,7 @@
             document.getElementById("panel-titulo").innerText = "Historial - " + info.nombre;
             document.getElementById("panel").style.display = "block";
 
-            fetch("http://127.0.0.1:5000/readings/" + id)
+            fetch("https://valencia-air.milla-chorda.hackclub.app/readings/" + id)
                 .then(respuesta => respuesta.json())
                 .then(datos => {
                     const fechas = datos.map(fila => fila[1]);
@@ -139,7 +139,7 @@
             document.getElementById("panel").style.display = "none";
         }
 
-        fetch("http://127.0.0.1:5000/latest")
+        fetch("https://valencia-air.milla-chorda.hackclub.app/latest")
             .then(respuesta => respuesta.json())
             .then(datos => {
                 datos.forEach(fila => {
