@@ -2,17 +2,23 @@ import requests
 import random
 
 nodos = [
-    {"node": 1, "pm25_min": 10, "pm25_max":25, "temp_min": 20, "temp_max": 28},
-    {"node": 2, "pm25_min": 20, "pm25_max":45, "temp_min": 21, "temp_max": 30},
-    {"node": 3, "pm25_min": 3, "pm25_max": 12, "temp_min": 18, "temp_max": 25},
+    {"node": 1, "pm_base": 18, "hum": 55},   
+    {"node": 2, "pm_base": 32, "hum": 50},   
+    {"node": 3, "pm_base": 7,  "hum": 75},  
 ]
 
 for n in nodos:
+    pm25 = round(random.uniform(n["pm_base"] - 5, n["pm_base"] + 5), 1)
     datos = {
         "node": n["node"],
-        "pm25": round(random.uniform(n["pm25_min"], n ["pm25_max"]), 1),
-        "temp": round(random.uniform(n["temp_min"], n["temp_max"]), 1)
+        "pm1": round(pm25 * 0.7, 1),
+        "pm25": pm25,
+        "pm10": round(pm25 * 1.4, 1),
+        "temp": round(random.uniform(18, 30), 1),
+        "humidity": round(random.uniform(n["hum"] - 5, n["hum"] + 5), 1),
+        "pressure": round(random.uniform(1010, 1020), 1),
+        "co2": round(random.uniform(400, 800), 0),
+        "voc": round(random.uniform(0, 200), 0)
     }
-
     respuesta = requests.post("http://127.0.0.1:5000/data", json=datos)
-    print(f"Nodo {n['node']} -> {datos} -> {respuesta.json()}")
+    print(f"Nodo {n['node']} -> PM2.5 {datos['pm25']}, Hum {datos['humidity']}% -> {respuesta.json()}")

@@ -21,8 +21,8 @@ def recieve_data():
     conexion = sqlite3.connect(DB_PATH)
     cursor = conexion.cursor()
     cursor.execute(
-        "INSERT INTO readings (timestamp, node, pm25, temp) VALUES (datetime('now'), ?, ?, ?)",
-        (data["node"], data["pm25"], data["temp"])
+        "INSERT INTO readings (timestamp, node, pm1, pm25, pm10, temp, humidity, pressure, co2, voc) VALUES (datetime('now'), ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (data["node"], data["pm1"], data["pm25"], data["pm10"], data["temp"], data["humidity"], data["pressure"], data["co2"], data["voc"])
     )
     conexion.commit()
     conexion.close()

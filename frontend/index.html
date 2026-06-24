@@ -143,10 +143,16 @@
             .then(respuesta => respuesta.json())
             .then(datos => {
                 datos.forEach(fila => {
-                    const id = fila[2];
-                    const pm25 = fila[3];
-                    const temp = fila[4];
                     const fecha = fila[1];
+                    const id = fila[2];
+                    const pm1 = fila[3];
+                    const pm25 = fila[4];
+                    const pm10 = fila[5];
+                    const temp = fila[6];
+                    const humidity = fila[7];
+                    const pressure = fila[8];
+                    const co2 = fila[9];
+                    const voc = fila[10];
                     const info = nodos[id];
 
                     L.circleMarker([info.lat, info.lng], {
@@ -157,9 +163,15 @@
                         fillOpacity: 0.9
                     }).addTo(map).bindPopup(
                         "<b>" + info.nombre + "</b><br>" +
-                        "PM2.5: " + pm25 + "µg/m³<br>" +
+                        "PM1.0: " + pm1 + " µg/m³<br>" +
+                        "PM2.5: " + pm25 + " µg/m³<br>" +
+                        "PM10: " + pm10 + " µg/m³<br>" +
                         "Temp: " + temp + " ºC<br>" +
-                        "Ultima lectura: " + fecha + "<br><br>" +
+                        "Humedad: " + humidity + " %<br>" +
+                        "Presión: " + pressure + " hPa<br>" +
+                        "CO2: " + co2 + " ppm<br>" +
+                        "VOC: " + voc + "<br>" +
+                        "Última lectura: " + fecha + "<br><br>" +
                         "<button onclick='verHistorial(" + id + ")'>Ver historial</button>"
                     );
 
