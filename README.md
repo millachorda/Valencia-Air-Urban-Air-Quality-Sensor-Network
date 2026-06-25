@@ -1,28 +1,28 @@
 # Valencia Air - Urban Air Quality Sensor Network
 
-This is a network consisting of three DIY sensor nodes that are monitoring the air quality across three different environments of the city of Valencia, Spain. There will be one DIY in the city centre, another one in the urban periphery and the last one one the more costal part. There will also be a live web map comparing all of the three zones in real time
+This is a network made up of three DIY sensor nodes. This sensors monitors the air quality across three different environments of the city of Valencia, Spain. There will be one of this nodes in the city centre, another one in the urban periphery and the last one one the more beach part. There will also be a live web map comparing all of the three zones in real time.
 
 ---
 
 ## What does it do?
 
-Each node measures particulate matter (PM1.0 / PM2.5 / PM10), temperature, humidity, pressure and the equivalent of CO2 / VOC levels. Readings are sent over WiFi every 60 seconds to a backend that stores the data and pushes live updates to an interactive map of Valencia. Each location shows up as a colored pin, with historical charts and a side-by-side comparison panel, plus a visual alert when PM2.5 exceeds the limit of 15 µg/m³.
+Each node measures particulate matter (PM1.0 / PM2.5 / PM10), temperature, humidity, pressure, CO2 levels and VOC levels. Readings are sent over WiFi every 60 seconds to a backend that stores the data and pushes live updates to an interactive map of Valencia. Each location shows up as a colored pin, with historical charts and a it changes color when PM2.5 is very high, normal or very low.
 
-The goal is to make pollution differences between this three environments visible and comparable - especially relevant in Valencia after the 2024 DANA floods.
+The goal is to see the differences on pollution all around the three environments making it visible and comparable.
 
 ## Why this locations?
 
-| Node | Location | Environment | Expected results |
-| -----|----------|-------------|------------------|
-| Node 1 | City center | Dense residential / urban | Baseline urban readings |
-| Node 2 | Periphery | Higher traffic and industry | Higher PM2.5 |
-| Node 3 | Coastal natural park | Clean air by the sea | Lowest PM2.5, higher humidity |
+| Node | Location | Environment |
+| -----|----------|-------------|
+| Node 1 | City center | Dense residential / urban |
+| Node 2 | Periphery | Higher traffic and industry |
+| Node 3 | Coastal natural park | Clean air by the sea |
 
-The coastal node sits in ahigh marine humidity, so its particulate readings are humidity-corrected using the BM E280 data.
+The coastal node sits in a high marine humidity, so its particulate readings are humidity-corrected using the BME280 data.
 
 ## Hardware
 
-Each node is build around an ESP32. Bill of materials per node
+Each node is built around an ESP32. Bill of materials per node:
 
 | Component | Function | Interface |
 |-----------|----------|-----------|
@@ -49,29 +49,10 @@ Three I2C devices share the same two pins. The PMS5003 uses a separate UART. Eve
 | PMS5003 VCC | 5V (VIN) |
 | All GND | GND |
 
-The PMS5003 data line outputs 3.3V even when powered at 5V, so it connects directly to the ESP32 with no level shifter needed.
+The PMS5003 outputs only 3.3V even when powered by a 5V power supply.
 
 ## Software
 
-- Firmware: Arduino / C++ on the ESP32. Libraries: 'Adafruit_BME280', 'Adafruit_SGP30', 'PMS', 'Adafruit_SSD1306'.
-- Backend: Python + Flask REST API, SQLite database, WebSockets for live updates. Hosted on [Nest](https://hacklub.app).
-- Frontend: Leaflet.js map + Chart.js graphs, plain HTML/CSS/JS.
-
-## Project status
-
-- [] Node 1 - sensors reading and displaying locally
-- [] Backend deployed and storing data
-- [] Nodes 2 and 3 built and installed
-- [] Live web map with all three nodes
-
-## How to reproduce
-
-1. Wire one node following the table above.
-2. Flash the firmware in '/firmware' with WiFi credentials and backend URL.
-3. Deploy the backend in '/backend' (instructions in that folder's README).
-4. Open the frontend in '/frontend' - it connects to the backend and renders the map.
-
-## About
-
-A personal project by a 16-year-old maker in Valencia. built for Hack Club Macondo. The aim is a system that actually runs 24/7 in three real locations and can scale into a wider citizen sensor network.
-
+- Firmware: Arduino on the ESP32. Libraries that I will use: 'Adafruit_BME280', 'Adafruit_SGP30', 'PMS', 'Adafruit_SSD1306'.
+- Backend: Python + Flask REST API, SQLite database. [Website of the map](https://valencia-air.milla-chorda.hackclub.app)
+- Frontend: The map HTML.
