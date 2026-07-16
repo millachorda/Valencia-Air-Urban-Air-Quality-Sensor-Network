@@ -52,7 +52,7 @@ Each node is built around an ESP32. All three nodes are identical.
 | IP65 enclosure + cable glands | Weatherproofing | — | — |
 
 Full bill of materials with prices, suppliers and component rationale:
-**[Hardware/BOM.md](Hardware/BOM.md)**
+**[Hardware/BOM.csv](Hardware/BOM.csv)**
 
 ### Why SCD41 *and* SGP30
 
