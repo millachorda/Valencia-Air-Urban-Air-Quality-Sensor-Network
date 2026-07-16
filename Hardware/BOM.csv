@@ -9,6 +9,6 @@ USB-C power supply 5V/2A,3,8.45,25.35,Amazon, - ,Power supply (one per node)
 Breadboard + Dupont wires kit,3,13.49,40.47,Amazon, - ,Connections (one per node)
 IP65 waterproof enclosure,3,12.31,36.93,Amazon (CPROSP), - ,150x110x70mm with cable glands (one per node)
 Neutral silicone sealant,1,5.66,5.66,Amazon (SIKA), - ,Seals the enclosure and the OLED window
-PTFE vent membrane,3,2.50,7.50,Amazon, - ,Air inlet/outlet for PMS5003 - blocks water, passes air
+PTFE vent membrane,3,2.50,7.50,Amazon, - ,Air inlet/outlet for PMS5003 - blocks water
 3D printed parts,3,3.00,9.00,Self-printed PLA/PETG, - ,Mounting plate + OLED bezel + PMS duct (see Hardware/CAD)
 TOTAL,,,414.27,,,
