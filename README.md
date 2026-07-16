@@ -74,7 +74,7 @@ barometric pressure. The two temperature readings cross-validate each other.
 
 ## Wiring
 
-![Wiring diagram](Hardware/wiring_diagram.png)
+![Wiring diagram](Hardware/circuit_image.svg)
 
 Four I2C devices share the same two pins; the PMS5003 uses a separate hardware
 UART. Everything shares a common ground.
