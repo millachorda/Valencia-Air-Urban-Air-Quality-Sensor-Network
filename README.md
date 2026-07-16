@@ -1,58 +1,168 @@
-# Valencia Air - Urban Air Quality Sensor Network
+# Valencia Air — Urban Air Quality Sensor Network
 
-This is a network made up of three DIY sensor nodes. This sensors monitors the air quality across three different environments of the city of Valencia, Spain. There will be one of this nodes in the city centre, another one in the urban periphery and the last one one the more beach part. There will also be a live web map comparing all of the three zones in real time.
+A network of three DIY sensor nodes monitoring air quality across three
+different environments in Valencia, Spain: the city center, the urban
+periphery, and the coastal natural park of El Saler. A live web map compares
+all three zones in real time.
+
+**Live map:** https://valencia-air.milla-chorda.hackclub.app
 
 ---
 
 ## What does it do?
 
-Each node measures particulate matter (PM1.0 / PM2.5 / PM10), temperature, humidity, pressure, CO2 levels and VOC levels. Readings are sent over WiFi every 60 seconds to a backend that stores the data and pushes live updates to an interactive map of Valencia. Each location shows up as a colored pin, with historical charts and a it changes color when PM2.5 is very high, normal or very low.
+Each node measures particulate matter (PM1.0 / PM2.5 / PM10), temperature,
+humidity, barometric pressure, CO2 and VOC levels. Readings are sent over WiFi
+every 60 seconds to a Flask backend that stores them in SQLite and pushes live
+updates to an interactive map of Valencia. Each location shows up as a colored
+pin with historical charts, and the pin changes color depending on whether PM2.5
+is low, normal or high.
 
-The goal is to see the differences on pollution all around the three environments making it visible and comparable.
+The goal is to make the pollution differences between the three environments
+visible and comparable.
 
-## Why this locations?
+## Why these locations?
 
 | Node | Location | Environment |
-| -----|----------|-------------|
+|------|----------|-------------|
 | Node 1 | City center | Dense residential / urban |
 | Node 2 | Periphery | Higher traffic and industry |
-| Node 3 | Coastal natural park | Clean air by the sea |
+| Node 3 | El Saler (coastal natural park) | Clean air by the sea |
 
-The coastal node sits in a high marine humidity, so its particulate readings are humidity-corrected using the BME280 data.
+The coastal node sits in high marine humidity, which inflates raw particulate
+readings through hygroscopic growth — water condenses on particles and they
+scatter more light. Node 3's PM readings are therefore humidity-corrected in
+firmware using the BME280's relative humidity (`COASTAL_NODE` flag).
+
+---
 
 ## Hardware
 
-Each node is built around an ESP32. Bill of materials per node:
+Each node is built around an ESP32. All three nodes are identical.
 
-| Component | Function | Interface |
-|-----------|----------|-----------|
-| ESP32 Devkit (USB-C) | Microcontroller + WiFi | - |
-| PMS5003 | Particulate matter PM1.0 / PM2.5 / PM10 | UART (5V) |
-| BME280 | Temperature, humidity, pressure | I2C |
-| SGP30 | CO2-equivalent, VOC | I2C |
-| 5V / 2A USB-C power supply | Power | - |
-| 0.96" OLED display | local readings | I2C
+| Component | Function | Interface | I2C address |
+|-----------|----------|-----------|-------------|
+| ESP32 DevKit (USB-C) | Microcontroller + WiFi | — | — |
+| PMS5003 | Particulate matter PM1.0 / PM2.5 / PM10 | UART @ 9600 | — |
+| SCD41 | True CO2 (photoacoustic NDIR), temp, humidity | I2C | `0x62` |
+| SGP30 | VOC / eCO2 | I2C | `0x58` |
+| BME280 | Temperature, humidity, pressure | I2C | `0x76` |
+| 0.96" OLED display | Local readings | I2C | `0x3C` |
+| 5V / 2A USB-C power supply | Power | — | — |
+| IP65 enclosure + cable glands | Weatherproofing | — | — |
 
-Node 3 has an IP65 weatherproof enclosure with cable glands for the more humid environment.
+Full bill of materials with prices, suppliers and component rationale:
+**[Hardware/BOM.md](Hardware/BOM.md)**
 
-## Wiring (per node)
+### Why SCD41 *and* SGP30
 
-Three I2C devices share the same two pins. The PMS5003 uses a separate UART. Everything shares a common ground.
+The SGP30 does not measure CO2 — it estimates it (eCO2) by correlating with VOC
+readings. Outdoors, with no indoor VOC sources, that estimate sits at its
+400 ppm floor and carries no information. Since this project exists to compare
+CO2 across three environments, the measurement has to be real: the SCD41 does it
+by photoacoustic NDIR, ±(50 ppm + 5%). The SGP30 stays because the SCD41 does
+not measure VOCs, and the project publishes VOC levels. Together they cover both
+properly.
+
+### Why the BME280 is kept
+
+The SCD41 also reports temperature and humidity, but the humidity correction on
+Node 3 needs an independent RH source, and the BME280 additionally provides
+barometric pressure. The two temperature readings cross-validate each other.
+
+---
+
+## Wiring
+
+![Wiring diagram](Hardware/wiring_diagram.png)
+
+Four I2C devices share the same two pins; the PMS5003 uses a separate hardware
+UART. Everything shares a common ground.
 
 | Connection | ESP32 pin |
 |------------|-----------|
-| I2C SDA (BME280, SGP30, OLED) | GPIO21 |
-| I2C SCL (BME280, SGP30, OLED) | GPIO22 |
-| PMS5003 TX -> ESP32 | GPIO16 (RX2) |
-| PMS5003 RX -> ESP32 | GPIO17 (TX2) |
-| I2C sensors VCC | 3V3 |
+| I2C SDA (SCD41, SGP30, BME280, OLED) | GPIO21 |
+| I2C SCL (SCD41, SGP30, BME280, OLED) | GPIO22 |
+| PMS5003 TX → ESP32 | GPIO16 (RX2) |
+| PMS5003 RX → ESP32 | GPIO17 (TX2) |
+| SGP30 / BME280 / OLED VCC | 3V3 |
+| SCD41 VDD | 5V (VIN) |
 | PMS5003 VCC | 5V (VIN) |
 | All GND | GND |
+| PMS5003 SET / RST | not connected |
 
-The PMS5003 outputs only 3.3V even when powered by a 5V power supply.
+**Note on the PMS5003 supply:** it needs a real 5 V rail — the laser and the fan
+will not run on 3.3 V. Its **UART logic**, however, is 3.3 V, which is why its
+TX line connects straight to the ESP32 with no level shifter.
+
+**Note on the SCD41 supply:** it accepts 2.4–5.5 V, but it is powered from VIN
+rather than 3V3 because it draws ~200 mA peaks during measurement, which would
+load the ESP32's onboard regulator that already feeds the other three I2C
+devices.
+
+The four I2C addresses do not collide, so all four devices coexist on one bus.
+
+---
+
+## Mechanical design
+
+The enclosure itself is a commercial CPROSP IP65 box (150×110×70 mm). The
+custom parts are what goes inside and on it:
+
+| Part | Purpose |
+|------|---------|
+| `mounting_plate` | Interior tray holding ESP32, SCD41, SGP30 and PMS5003 |
+| `oled_bezel` | Frame holding the OLED behind a sealed polycarbonate window |
+| `pms_duct` | Dual-port air duct with PTFE membrane pockets |
+
+**[Hardware/CAD/valencia_air_node.step](Hardware/CAD/valencia_air_node.step)** — all three parts in one STEP file
+**[Hardware/CAD/valencia_air_enclosure.py](Hardware/CAD/valencia_air_enclosure.py)** — parametric CadQuery source
+STL files for printing are in the same folder.
+
+Two design decisions worth calling out:
+
+- **The BME280 mounts outside the box.** Inside a sealed enclosure it would read
+  the box's own temperature, not ambient air — up to 10 °C high under direct
+  sun, which would corrupt the humidity correction applied to the PM readings.
+  It exits through a cable gland into a shaded vented shield.
+- **The OLED window is sealed; all airflow goes through the duct.** The PMS5003
+  has separate air inlet and outlet, so it gets two dedicated downward-facing
+  ports covered with PTFE membrane. Drilling those ports means the enclosure is
+  no longer strictly IP65 — it is effectively ~IP54 (rain-protected). This is
+  standard for outdoor air quality stations: a particulate sensor in a truly
+  sealed box measures nothing.
+
+Building steps: **[Hardware/ASSEMBLY.md](Hardware/ASSEMBLY.md)**
+
+---
 
 ## Software
 
-- Firmware: Arduino on the ESP32. Libraries that I will use: 'Adafruit_BME280', 'Adafruit_SGP30', 'PMS', 'Adafruit_SSD1306'.
-- Backend: Python + Flask REST API, SQLite database. [Website of the map](https://valencia-air.milla-chorda.hackclub.app)
-- Frontend: The map HTML.
+### Firmware — [`firmware/valencia_air_node.ino`](firmware/valencia_air_node.ino)
+
+Arduino on the ESP32. Sensors are **autodetected** at boot via an I2C scan: any
+sensor that is absent is reported as `null` and the node keeps running, so a
+single dead module never takes a node offline. The PMS5003 frame is parsed
+directly from `Serial2` (32-byte frames, `0x42 0x4D` header, checksum verified).
+
+Libraries: `Sensirion I2C SCD4x`, `Adafruit_SGP30`, `Adafruit_BME280`,
+`Adafruit_SSD1306`, `Adafruit_GFX`, `Adafruit_Unified_Sensor`.
+
+Per-node configuration lives at the top of the file (`NODE_ID`, `NODE_NAME`,
+`COASTAL_NODE`, WiFi credentials, `API_URL`).
+
+### Backend — `backend/app.py`
+
+Python + Flask REST API with a SQLite database.
+
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `/data` | POST | Nodes publish readings here |
+| `/readings/<node>` | GET | Historical readings for one node |
+| `/` | GET | Serves the map |
+
+### Frontend — `frontend/`
+
+HTML map with a colored pin per node and historical charts.
+
+---
