@@ -1,28 +1,3 @@
-"""
-Valencia Air - Urban Air Quality Sensor Network
-Piezas mecanicas del nodo (archivo FUENTE, parametrico)
-
-La carcasa NO se fabrica: es una caja comercial CPROSP IP65 150x110x70 mm.
-Este archivo genera las piezas que van DENTRO / SOBRE esa caja:
-
-  1. mounting_plate  - bandeja interior que sujeta ESP32, BME280, SCD41,
-                       SGP30 y PMS5003. Se atornilla a los bosses de la caja.
-  2. oled_bezel      - marco que sujeta la OLED tras una ventana de
-                       policarbonato en la tapa (ventana SELLADA, no ventila).
-  3. pms_duct        - conducto de doble boca que alinea la entrada y la
-                       salida de aire del PMS5003 con la cara inferior de la
-                       caja, y aloja la membrana PTFE.
-
-Uso:
-    pip install cadquery
-    python valencia_air_enclosure.py
-Salida: STEP y STL de cada pieza + STEP del conjunto.
-
-IMPORTANTE: los parametros marcados [VERIFICAR] estan tomados de datasheet o
-de dimensiones tipicas. Antes de imprimir, medir con calibre la unidad real:
-los modulos genericos varian entre lotes.
-"""
-
 import cadquery as cq
 
 # =====================================================================
