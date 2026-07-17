@@ -52,7 +52,7 @@ Each node is built around an ESP32. All three nodes are identical.
 | IP65 enclosure + cable glands | Weatherproofing | — | — |
 
 Full bill of materials with prices, suppliers and component rationale:
-**[Hardware/BOM.md](Hardware/BOM.csv)**
+**[Hardware/BOM.csv](Hardware/BOM.csv)**
 
 ### Why SCD41 *and* SGP30
 
@@ -141,7 +141,7 @@ Build steps: **[Hardware/ASSEMBLY.md](Hardware/ASSEMBLY.md)**
 
 ## Software
 
-### Firmware — [`firmware/valencia_air_node.ino`](firmware/valencia_air_node.ino)
+### Firmware — `firmware/valencia_air_node.ino`
 
 Arduino on the ESP32. Sensors are **autodetected** at boot via an I2C scan: any
 sensor that is absent is reported as `null` and the node keeps running, so a
@@ -164,6 +164,26 @@ Python + Flask REST API with a SQLite database.
 | `/readings/<node>` | GET | Historical readings for one node |
 | `/` | GET | Serves the map |
 
+Expected JSON payload:
+
+```json
+{"node":3,"pm1":4,"pm25":7,"pm10":9,"temp":24.1,"humidity":68.2,"pressure":1014.1,"co2":421,"voc":18}
+```
+
 ### Frontend — `frontend/`
 
 HTML map with a colored pin per node and historical charts.
+
+---
+
+## Project status
+
+| Milestone | Status |
+|-----------|--------|
+| ESP32 boots, connects to WiFi, publishes to backend | Pending hardware |
+| BME280 reading and publishing live data | Pending hardware |
+| Backend + live map deployed | Done |
+| OLED display driver | Pending |
+| SCD41 / SGP30 integration | Pending hardware |
+| PMS5003 integration | Pending hardware |
+| Enclosure assembly and deployment | Pending |
