@@ -164,26 +164,6 @@ Python + Flask REST API with a SQLite database.
 | `/readings/<node>` | GET | Historical readings for one node |
 | `/` | GET | Serves the map |
 
-Expected JSON payload:
-
-```json
-{"node":3,"pm1":4,"pm25":7,"pm10":9,"temp":24.1,"humidity":68.2,"pressure":1014.1,"co2":421,"voc":18}
-```
-
 ### Frontend — `frontend/`
 
 HTML map with a colored pin per node and historical charts.
-
----
-
-## Project status
-
-| Milestone | Status |
-|-----------|--------|
-| ESP32 boots, connects to WiFi, publishes to backend | Done |
-| BME280 reading and publishing live data | Done |
-| Backend + live map deployed | Done |
-| OLED display driver | Done |
-| SCD41 / SGP30 integration | Pending hardware |
-| PMS5003 integration | Pending hardware |
-| Enclosure assembly and deployment | Pending |
