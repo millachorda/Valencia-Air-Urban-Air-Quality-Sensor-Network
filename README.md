@@ -52,7 +52,7 @@ Each node is built around an ESP32. All three nodes are identical.
 | IP65 enclosure + cable glands | Weatherproofing | — | — |
 
 Full bill of materials with prices, suppliers and component rationale:
-**[Hardware/BOM.csv](Hardware/BOM.csv)**
+**[Hardware/BOM.md](Hardware/BOM.csv)**
 
 ### Why SCD41 *and* SGP30
 
@@ -111,7 +111,7 @@ custom parts are what goes inside and on it:
 
 | Part | Purpose |
 |------|---------|
-| `mounting_plate` | Interior tray holding ESP32, SCD41, SGP30 and PMS5003 |
+| `mounting_plate` | Interior tray holding ESP32, SCD41, SGP30, BME280 and PMS5003 |
 | `oled_bezel` | Frame holding the OLED behind a sealed polycarbonate window |
 | `pms_duct` | Dual-port air duct with PTFE membrane pockets |
 
@@ -121,10 +121,13 @@ STL files for printing are in the same folder.
 
 Two design decisions worth calling out:
 
-- **The BME280 mounts outside the box.** Inside a sealed enclosure it would read
-  the box's own temperature, not ambient air — up to 10 °C high under direct
-  sun, which would corrupt the humidity correction applied to the PM readings.
-  It exits through a cable gland into a shaded vented shield.
+- **All sensors sit inside the enclosure, and the BME280 sits in the PMS5003's
+  air intake path.** A temperature/humidity sensor floating loose inside a
+  closed box measures the box, not the atmosphere — under direct sun that reads
+  as much as 10 °C high, and since warming air drops relative humidity, the
+  error would propagate straight into Node 3's humidity correction. Mounting the
+  BME280 next to the duct intake means the PMS5003's own fan continuously pulls
+  outside air across it. Some solar bias remains, so nodes are mounted in shade.
 - **The OLED window is sealed; all airflow goes through the duct.** The PMS5003
   has separate air inlet and outlet, so it gets two dedicated downward-facing
   ports covered with PTFE membrane. Drilling those ports means the enclosure is
@@ -132,7 +135,7 @@ Two design decisions worth calling out:
   standard for outdoor air quality stations: a particulate sensor in a truly
   sealed box measures nothing.
 
-Building steps: **[Hardware/ASSEMBLY.md](Hardware/ASSEMBLY.md)**
+Build steps: **[Hardware/ASSEMBLY.md](Hardware/ASSEMBLY.md)**
 
 ---
 
@@ -161,8 +164,26 @@ Python + Flask REST API with a SQLite database.
 | `/readings/<node>` | GET | Historical readings for one node |
 | `/` | GET | Serves the map |
 
+Expected JSON payload:
+
+```json
+{"node":3,"pm1":4,"pm25":7,"pm10":9,"temp":24.1,"humidity":68.2,"pressure":1014.1,"co2":421,"voc":18}
+```
+
 ### Frontend — `frontend/`
 
 HTML map with a colored pin per node and historical charts.
 
 ---
+
+## Project status
+
+| Milestone | Status |
+|-----------|--------|
+| ESP32 boots, connects to WiFi, publishes to backend | Done |
+| BME280 reading and publishing live data | Done |
+| Backend + live map deployed | Done |
+| OLED display driver | Done |
+| SCD41 / SGP30 integration | Pending hardware |
+| PMS5003 integration | Pending hardware |
+| Enclosure assembly and deployment | Pending |
