@@ -12,9 +12,9 @@ OLED, IP65 enclosure, USB-C PSU, Dupont wires, PTFE membrane, neutral silicone.
 
 **3D printed** (see `Hardware/CAD/`, PLA or PETG, 0.2 mm layers, 30% infill —
 PETG preferred for the coastal node, it handles UV and heat better):
-- `mounting_plate.step` — interior tray
-- `oled_bezel.step` — display frame
-- `pms_duct.step` — PMS5003 air duct
+- `mounting_plate.stl` — interior tray
+- `oled_bezel.stl` — display frame
+- `pms_duct.stl` — PMS5003 air duct
 
 **Tools:** soldering iron, 20 mm hole saw (included with the CPROSP box),
 3 mm drill bit, screwdriver, calipers, multimeter, zip ties.
@@ -44,7 +44,7 @@ and is very hard to diagnose later.
 
 ## 3. Bench test before enclosing
 
-Wire everything on the breadboard first, per `Hardware/wiring_diagram.png`:
+Wire everything on the breadboard first, per `Hardware/CAD/circuit_image.svg`:
 
 | From | To |
 |------|-----|
